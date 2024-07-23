@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transaction Bundler</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <h1>Transaction Bundler</h1>
+    <form id="bundleForm">
+      <input type="text" id="from" placeholder="Your Address" required />
+      <input type="text" id="to" placeholder="Recipient Address" required />
+      <input type="text" id="amount" placeholder="Amount in ETH" required />
+      <button type="submit">Bundle Transaction</button>
+    </form>
+    <button id="executeBundle">Execute Bundle</button>
+
+    <script>
+      const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+
+      $("#bundleForm").submit(async function (e) {
+        e.preventDefault();
+
+        const from = $("#from").val();
+        const to = $("#to").val();
+        const amount = $("#amount").val();
+
+        $.post("/bundle", { from, to, amount }, function (data) {
+          console.log(data);
+          alert(data.status);
+        }).fail(function (error) {
+          console.error(error);
+          alert("Error bundling transaction");
+        });
+      });
+
+      $("#executeBundle").click(function () {
+        const from = $("#from").val();
+
+        $.post("/executeBundle", { from }, function (data) {
+          console.log(data);
+          alert(data.status);
+        }).fail(function (error) {
+          console.error(error);
+          alert("Error executing bundle");
+        });
+      });
+    </script>
+  </body>
+</html>
